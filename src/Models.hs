@@ -22,7 +22,7 @@ data Move = Move {
 } deriving (Show, Generic)
 
 instance Eq Move where
-  a == b = (x a == x b) && (y a == y b)
+  a == b = (x a == x b) && (y a == y b) && (v a == v b)
 
 type Moves = [Move]
 
