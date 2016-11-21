@@ -16,7 +16,15 @@ inverseMovePlayer (Move x y 'x') = Move x y 'o'
 inverseMovePlayer (Move x y 'o') = Move x y 'x'
 
 winnerExists :: Moves -> Bool
-winnerExists moves = False
+winnerExists moves = foldl (||) False (inARow ++ inAColumn ++ inADiagonal)
+    where
+        inARow = map (threeInALine moves allRowMoves) [1, 2, 3]
+        inAColumn = map (threeInALine moves allColumnMoves) [1, 2, 3]
+        inADiagonal = map (threeInALine moves allDiagonalMoves) [1, 2]
+        threeInALine currentMoves movesGen i = length xMoves == 3 || length oMoves == 3
+            where
+                xMoves = movesGen i 'x' `intersect` moves
+                oMoves = movesGen i 'o' `intersect` moves
 
 firstMove :: Char -> Move
 firstMove symbol = Move 1 1 symbol
