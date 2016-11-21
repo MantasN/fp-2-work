@@ -8,6 +8,8 @@ main :: IO ()
 main =  do
   args <- getArgs
   case args of
-    ["1", gameId, symbol] -> startGame $ GameSetup Attack gameId "1" (head symbol)
-    ["2", gameId, symbol] -> startGame $ GameSetup Defend gameId "2" (head symbol)
-    _ -> putStrLn "USAGE: gameMode (1 - attack, 2 - defend), gameId, symbol"
+    ["attack", gameId, "x"] -> startGame $ GameSetup Attack gameId "1" 'x'
+    ["attack", gameId, "o"] -> startGame $ GameSetup Attack gameId "1" 'o'
+    ["defend", gameId, "x"] -> startGame $ GameSetup Defend gameId "2" 'x'
+    ["defend", gameId, "o"] -> startGame $ GameSetup Defend gameId "2" 'o'
+    _ -> putStrLn "USAGE: gameMode (attack or defend), gameId, symbol (x or o)"

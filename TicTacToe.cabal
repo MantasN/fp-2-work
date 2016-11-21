@@ -17,6 +17,8 @@ library
   hs-source-dirs:      src
   exposed-modules:     Game
                      , Models
+                     , Network
+                     , Strategy
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , http-conduit
