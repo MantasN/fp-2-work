@@ -18,13 +18,13 @@ inverseMovePlayer (Move x y 'o') = Move x y 'x'
 winnerExists :: Moves -> Bool
 winnerExists moves = foldl (||) False (inARow ++ inAColumn ++ inADiagonal)
     where
-        inARow = map (threeInALine moves allRowMoves) [1, 2, 3]
-        inAColumn = map (threeInALine moves allColumnMoves) [1, 2, 3]
-        inADiagonal = map (threeInALine moves allDiagonalMoves) [1, 2]
-        threeInALine currentMoves movesGen i = length xMoves == 3 || length oMoves == 3
+        inARow = map (threeInALine moves allRowMoves) [0, 1, 2]
+        inAColumn = map (threeInALine moves allColumnMoves) [0, 1, 2]
+        inADiagonal = map (threeInALine moves allDiagonalMoves) [0, 1]
+        threeInALine currentMoves movesGen i = (length xMoves == 3) || (length oMoves == 3)
             where
-                xMoves = movesGen i 'x' `intersect` moves
-                oMoves = movesGen i 'o' `intersect` moves
+                xMoves = (movesGen i 'x') `intersect` moves
+                oMoves = (movesGen i 'o') `intersect` moves
 
 firstMove :: Char -> Move
 firstMove symbol = Move 1 1 symbol
@@ -36,20 +36,20 @@ allColumnMoves :: Int -> Char -> Moves
 allColumnMoves columnN playerSymbol = [move | x <- [0..2], y <- [columnN], v <- [playerSymbol], let move = (Move x y v)]
 
 allDiagonalMoves :: Int -> Char -> Moves
-allDiagonalMoves 1 playerSymbol = [Move 0 0 playerSymbol, Move 1 1 playerSymbol, Move 2 2 playerSymbol]
-allDiagonalMoves 2 playerSymbol = [Move 0 2 playerSymbol, Move 1 1 playerSymbol, Move 2 0 playerSymbol]
+allDiagonalMoves 0 playerSymbol = [Move 0 0 playerSymbol, Move 1 1 playerSymbol, Move 2 2 playerSymbol]
+allDiagonalMoves 1 playerSymbol = [Move 0 2 playerSymbol, Move 1 1 playerSymbol, Move 2 0 playerSymbol]
 
 allCornerMoves :: Char -> Moves
 allCornerMoves playerSymbol = [move | x <- [0,2], y <- [0,2], v <- [playerSymbol], let move = (Move x y v)]
 
 checkRow :: (Moves -> Moves -> Moves -> Maybe Move) -> Char -> Moves -> [Maybe Move]
-checkRow criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allRowMoves)) [1, 2, 3]
+checkRow criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allRowMoves)) [0, 1, 2]
 
 checkColumn :: (Moves -> Moves -> Moves -> Maybe Move) -> Char -> Moves -> [Maybe Move]
-checkColumn criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allColumnMoves)) [1, 2, 3]
+checkColumn criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allColumnMoves)) [0, 1, 2]
 
 checkDiagonal :: (Moves -> Moves -> Moves -> Maybe Move) -> Char -> Moves -> [Maybe Move]
-checkDiagonal criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allDiagonalMoves)) [1, 2]
+checkDiagonal criteria playerSymbol moves = map (checkByCriteria (criteria) playerSymbol moves (allDiagonalMoves)) [0, 1]
 
 checkByCriteria :: (Moves -> Moves -> Moves -> Maybe Move) -> Char -> Moves -> (Int -> Char -> Moves) -> Int -> Maybe Move
 checkByCriteria criteria playerSymbol moves allPossibleMovesGen index = criteria possibleOurMoves possibleOpponentMoves moves
@@ -91,8 +91,13 @@ randomMove playerSymbol moves = if movesLength > 0
     where
         possibleOurMoves = [move | x <- [0..2], y <- [0..2], v <- [playerSymbol], let move = (Move x y v), move `notElem` moves]
         availableMoves = filter (\move -> (inverseMovePlayer move) `notElem` moves) possibleOurMoves
+        centerMove = availableMoves `intersect` [firstMove playerSymbol]
         cornerMoves = availableMoves `intersect` (allCornerMoves playerSymbol)
-        movesToSelectFrom = if length cornerMoves > 0 then cornerMoves else availableMoves
+        movesToSelectFrom = if length centerMove /= 0
+            then centerMove
+            else if length cornerMoves > 0 
+                then cornerMoves 
+                else availableMoves
         movesLength = length movesToSelectFrom
 
 nextMove :: Char -> Moves -> IO (Maybe Move)

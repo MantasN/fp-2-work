@@ -13,7 +13,7 @@ main = hspec $ do
       winnerExists [Move 0 0 'x', Move 2 2 'o', Move 1 1 'x', Move 2 0 'o', Move 1 2 'x'] `shouldBe` False
 
     it "returns true if winner exists" $ do
-      winnerExists [Move 1 1 'x', Move 0 0 'o', Move 0 1 'x', Move 2 0 'o', Move 2 1 'x'] `shouldBe` True
+      winnerExists [Move 0 0 'x', Move 1 0 'x', Move 2 0 'x', Move 0 2 'o', Move 2 2 'o'] `shouldBe` True
 
     it "second move is in the one of the corners" $ do
       move <- nextMove 'o' [Move 1 1 'x']
