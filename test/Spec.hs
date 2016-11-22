@@ -32,8 +32,8 @@ main = hspec $ do
       (fromJust move) `elem` [Move 0 1 'o', Move 0 2 'o', Move 1 0 'o', Move 2 0 'o'] `shouldBe` True
 
     it "puts randomly in the free space if nothing else matches" $ do
-      move <- nextMove 'o' [Move 1 1 'x', Move 0 1 'o', Move 0 2 'x', Move 2 0 'o', Move 1 0 'x', Move 1 2 'o', Move 2 1 'x']
-      (fromJust move) `elem` [Move 0 0 'o', Move 2 2 'o'] `shouldBe` True
+      move <- nextMove 'o' [Move 1 1 'x', Move 2 1 'o', Move 0 1 'x', Move 0 0 'o', Move 2 0 'x', Move 0 2 'o', Move 2 2 'x']
+      (fromJust move) `elem` [Move 1 0 'o', Move 1 2 'o'] `shouldBe` True
 
     it "returns Nothing if board is full" $ do
       move <- nextMove 'o' [Move 1 1 'x', Move 0 1 'o', Move 0 2 'x', Move 2 0 'o', Move 1 0 'x', Move 1 2 'o', Move 2 1 'x', Move 0 0 'o', Move 2 2 'x']
